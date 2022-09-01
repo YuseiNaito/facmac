@@ -54,23 +54,28 @@ RUN yes | pip3 uninstall enum34
 
 WORKDIR /home/user
 
+#RUN mkdir -p .mujoco \
+#    && wget https://www.roboti.us/download/mujoco210_linux.zip -O mujoco.zip \
+#    && unzip mujoco.zip -d .mujoco \
+#    && rm mujoco.zip \
+#    && mv .mujoco/mujoco210_linux .mujoco/mujoco210
 RUN mkdir -p .mujoco \
-    && wget https://www.roboti.us/download/mujoco200_linux.zip -O mujoco.zip \
-    && unzip mujoco.zip -d .mujoco \
-    && rm mujoco.zip \
-    && mv .mujoco/mujoco200_linux .mujoco/mujoco200
+    && wget https://mujoco.org/download/mujoco210-linux-x86_64.tar.gz -O mujoco.tar.gz \
+    && tar -zxvf mujoco.tar.gz \
+    && rm mujoco.tar.gz \
+    && mv mujoco210 .mujoco/mujoco210
 
 # Make sure you have a license key, otherwise comment it out
-COPY ./mujoco_key.txt .mujoco/mjkey.txt
+COPY ./mjkey.txt .mujoco/mjkey.txt
 
-ENV LD_LIBRARY_PATH /home/user/.mujoco/mujoco200/bin:${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH /home/user/.mujoco/mujoco210/bin:${LD_LIBRARY_PATH}
 
 ENV MUJOCO_PY_MJKEY_PATH /home/user/.mujoco/mjkey.txt
-ENV MUJOCO_PY_MUJOCO_PATH /home/user/.mujoco/mujoco200
+ENV MUJOCO_PY_MUJOCO_PATH /home/user/.mujoco/mujoco210
 
 RUN pip3 install --user mujoco-py
-RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/.mujoco/mujoco200/bin" >> ~/.bashrc
-RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/.mujoco/mujoco200/bin" >> ~/.profile
+RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/.mujoco/mujoco210/bin" >> ~/.bashrc
+RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/.mujoco/mujoco210/bin" >> ~/.profile
 RUN python3 -c "import mujoco_py"
 
 # set python path

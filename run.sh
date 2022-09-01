@@ -13,9 +13,8 @@ else
 fi
 echo "${@:2}" 2>&1 >> log.txt
 
-NV_GPU="$GPU" ${cmd} run -d \
+NV_GPU="$GPU" ${cmd} run \
     --name $name \
-    --user $(id -u):$(id -g) \
     -v `pwd`:/home/user/pymarl \
     -e PYTHONPATH=/home/user/pymarl \
     -t pymarl \

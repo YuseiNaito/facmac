@@ -1,5 +1,7 @@
-FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:11.6.1-cudnn8-devel-ubuntu20.04
 MAINTAINER Bei Peng
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 # CUDA includes
 ENV CUDA_PATH /usr/local/cuda
@@ -19,11 +21,13 @@ RUN apt-get update -y && apt-get install -y curl libssl-dev openssl libopenblas-
 #Install python3 pip3
 RUN apt-get update
 RUN add-apt-repository ppa:deadsnakes/ppa -y
-RUN apt-get update && apt-get install -y python3.6 python3.6-dev
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
+RUN apt-get update && apt-get install -y python3.7 python3.7-dev
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
 RUN apt-get install -y python3-pip
+RUN apt-get install -y python3.7-distutils
 RUN pip3 install --upgrade pip
 RUN apt-get install -y python-apt --reinstall
+RUN pip3 install protobuf==3.20.*
 RUN pip3 install numpy scipy pyyaml matplotlib
 RUN pip3 install imageio
 RUN pip3 install tensorboard-logger
@@ -39,7 +43,7 @@ RUN git clone https://github.com/oxwhirl/sacred.git /install/sacred && cd /insta
 # Install pymongo
 RUN pip3 install pymongo
 
-RUN pip3 install torch torchvision
+RUN pip3 install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu116
 RUN pip3 install snakeviz pytest probscale
 RUN apt-get install -y htop iotop
 RUN pip3 install Jinja2
@@ -48,7 +52,7 @@ RUN pip3 install Jinja2
 #### install mujoco
 #### -------------------------------------------------------------------
 RUN apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3
-RUN ln -s /usr/lib/x86_64-linux-gnu/libGL.so.1 /usr/lib/x86_64-linux-gnu/libGL.so
+# RUN ln -s /usr/lib/x86_64-linux-gnu/libGL.so.1 /usr/lib/x86_64-linux-gnu/libGL.so
 RUN apt install -y unzip patchelf
 RUN yes | pip3 uninstall enum34
 

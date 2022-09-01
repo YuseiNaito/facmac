@@ -14,6 +14,7 @@ fi
 echo "${@:2}" 2>&1 >> log.txt
 
 NV_GPU="$GPU" ${cmd} run \
+    --rm \
     --name $name \
     -v `pwd`:/home/user/pymarl \
     -e PYTHONPATH=/home/user/pymarl \
